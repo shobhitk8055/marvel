@@ -4,7 +4,9 @@ const PAGES = {
   CHARACTER: "character",
   FAVORITE: "favorite",
 };
-const apiUrl = "http://localhost:3000/";
+
+// const apiUrl = "http://localhost:3000/";
+const apiUrl = "https://charmed-cool-hope.glitch.me/";
 const loadingGIFs = [
   "src/images/ironman.gif",
   "src/images/deadpool.gif",
