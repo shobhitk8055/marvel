@@ -1,3 +1,4 @@
+// Constants and helper functions
 const PAGES = {
   HOME: "home",
   CHARACTER: "character",
@@ -13,6 +14,7 @@ const getEl = (id) => document.getElementById(id);
 const showEl = (id) => (document.getElementById(id).style.display = "block");
 const hideEl = (id) => (document.getElementById(id).style.display = "none");
 
+// Remove a character from favorites
 const removeFavorite = (characterId, id) => (e) => {
   e.stopPropagation();
   let favorites = localStorage.getItem("marvel-favorites");
@@ -29,6 +31,7 @@ const removeFavorite = (characterId, id) => (e) => {
   location.reload();
 };
 
+// Add a character to favorites
 const addFavorite = (hero) => (e) => {
   const heroPayload = {
     id: hero.id,
@@ -57,6 +60,7 @@ const addFavorite = (hero) => (e) => {
   unfavButton.style.display = "block";
 };
 
+// Handle character click from anywhere
 const characterClicked = (characterId) => () => {
   const url = new URL(location.href);
   const params = new URLSearchParams(url.searchParams);
@@ -65,6 +69,7 @@ const characterClicked = (characterId) => () => {
   location.href = url.href + "?" + params.toString();
 };
 
+// Display list of series, comics, stories
 const multiplyItem = (id) => (item) => {
   const el = getEl(id);
   let blueprint = getEl("comic-blueprint");
@@ -85,6 +90,7 @@ const multiplyItem = (id) => (item) => {
   el.append(appendItem);
 };
 
+// Display list of heros in home page and favorite page
 const multiplyHero = (id) => (hero) => {
   let blueprint = getEl("hero-blueprint");
   blueprint = blueprint.cloneNode(true);
@@ -141,6 +147,7 @@ const multiplyHero = (id) => (hero) => {
   row.append(appendItem);
 };
 
+// Favorite button click in hero page
 const viewPageFavBtn = (hero) => (e) => {
   let favorites = localStorage.getItem("marvel-favorites");
   const heroPayload = {
@@ -163,6 +170,7 @@ const viewPageFavBtn = (hero) => (e) => {
   getEl("unfavorite-btn").style.display = "block";
 };
 
+// Remove favorite button click in hero page
 const viewPageUnFavBtn = (hero) => (e) => {
   let favorites = localStorage.getItem("marvel-favorites");
   if (favorites) {
@@ -174,6 +182,7 @@ const viewPageUnFavBtn = (hero) => (e) => {
   getEl("unfavorite-btn").style.display = "none";
 };
 
+// Handle click on a searced result
 const clickResult = (id) => () => {
   const url = new URL(location.href);
   const searchParams = new URLSearchParams(url.searchParams);
@@ -182,7 +191,8 @@ const clickResult = (id) => () => {
   location.href = url.origin + "?" + searchParams.toString();
 };
 
-const handleSearchButton = async (e) => {
+// Handle search submit form
+const handleSearchSubmit = async (e) => {
   e.preventDefault();
   const val = getEl("search").value;
   hideEl("results");
@@ -211,29 +221,35 @@ const handleSearchButton = async (e) => {
   }
 };
 
+// Handle on input change in search form
 const handleInput = (e) => {
   if (e.target.value.length === 0) {
     hideEl("results");
-
     document.querySelector(".resultsBox").innerHTML = null;
   }
 };
 
+// Show different gifs as loaders
 const showLoading = () => {
   var randomNo = Math.floor(Math.random() * 3);
   console.log(randomNo);
   document
     .querySelector("#loading img")
     .setAttribute("src", loadingGIFs[randomNo]);
+  hideEl("homePage");
+  hideEl("viewPage");
+  hideEl("favoritePage");
 };
 
-getEl("searchForm").addEventListener("submit", handleSearchButton);
+// Add event listeners
+getEl("searchForm").addEventListener("submit", handleSearchSubmit);
 getEl("search").addEventListener("keyup", handleInput);
 
 //IIFE
 {
 }
 (async () => {
+  // Get page url and values from query params
   const url = new URL(location.href);
   const params = new URLSearchParams(url.searchParams);
   const page = params.get("page");
@@ -246,11 +262,10 @@ getEl("search").addEventListener("keyup", handleInput);
       currentPage = PAGES.FAVORITE;
     }
   }
+
   if (currentPage === PAGES.HOME) {
+    // If page is home page
     showLoading();
-    hideEl("homePage");
-    hideEl("viewPage");
-    hideEl("favoritePage");
     document.querySelector(".nav-link.active").classList.remove("active");
     getEl("homeTab").classList.add("active");
     const response = await fetch(apiUrl + "characters");
@@ -258,11 +273,11 @@ getEl("search").addEventListener("keyup", handleInput);
     heros.forEach(multiplyHero("heroes"));
     hideEl("loading");
     showEl("homePage");
+    
   } else if (currentPage === PAGES.CHARACTER) {
+    // If page is character page
+
     showLoading();
-    hideEl("homePage");
-    hideEl("viewPage");
-    hideEl("favoritePage");
     const response = await fetch(apiUrl + "character/" + characterId);
     const character = await response.json();
 
@@ -323,10 +338,8 @@ getEl("search").addEventListener("keyup", handleInput);
     stories = stories.slice(0, 6);
     stories.forEach(multiplyItem("stories"));
   } else {
+    // If page is favorites page
     showLoading();
-    hideEl("homePage");
-    hideEl("viewPage");
-    hideEl("favoritePage");
     document.querySelector(".nav-link.active").classList.remove("active");
     getEl("favTab").classList.add("active");
     let favorites = localStorage.getItem("marvel-favorites");
