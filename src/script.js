@@ -68,7 +68,7 @@ const characterClicked = (characterId) => () => {
   const params = new URLSearchParams(url.searchParams);
   params.set("character", characterId);
   params.set("page", PAGES.CHARACTER);
-  location.href = url.href + "?" + params.toString();
+  location.href = url.origin + url.pathname + "?" + params.toString();
 };
 
 // Display list of series, comics, stories
@@ -192,6 +192,20 @@ const clickResult = (id) => () => {
   searchParams.set("character", id);
   location.href = url.origin + url.pathname + "?" + searchParams.toString();
 };
+
+function goToHome(){
+  const url = new URL(location.href);
+  const searchParams = new URLSearchParams(url.searchParams);
+  searchParams.set("page", PAGES.HOME);
+  location.href = url.origin + url.pathname + "?" + searchParams.toString();
+}
+
+function goToFav(){
+  const url = new URL(location.href);
+  const searchParams = new URLSearchParams(url.searchParams);
+  searchParams.set("page", PAGES.FAVORITE);
+  location.href = url.origin + url.pathname + "?" + searchParams.toString();
+}
 
 // Handle search submit form
 const handleSearchSubmit = async (e) => {
