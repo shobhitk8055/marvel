@@ -190,7 +190,7 @@ const clickResult = (id) => () => {
   const searchParams = new URLSearchParams(url.searchParams);
   searchParams.set("page", PAGES.CHARACTER);
   searchParams.set("character", id);
-  location.href = url.origin + "?" + searchParams.toString();
+  location.href = url.origin + url.pathname + "?" + searchParams.toString();
 };
 
 // Handle search submit form
@@ -275,7 +275,6 @@ getEl("search").addEventListener("keyup", handleInput);
     heros.forEach(multiplyHero("heroes"));
     hideEl("loading");
     showEl("homePage");
-    
   } else if (currentPage === PAGES.CHARACTER) {
     // If page is character page
 
